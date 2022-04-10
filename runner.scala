@@ -155,7 +155,7 @@ object Main extends IOApp {
       )
     )
 
-    val rounds = 10
+    val rounds = sys.env.getOrElse("ROUNDS", "10").toInt
 
     val shouldWarmup = !sys.env.contains("NO_WARMUP")
 
