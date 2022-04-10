@@ -85,7 +85,7 @@ OpenJDK 64-Bit Server VM (Zulu 8.54.0.21-CA-macosx) (build 25.292-b10, mixed mod
 
 ## Results
 
-[![Median compilation speed](./output/graph.png)](./output/graph.png)
+[![Median compilation speed](./images/graph.png)](./images/graph.png)
 
 **All times are in seconds (floored)** - I didn't need more precision.
 
