@@ -55,7 +55,7 @@ Memory: 32 GB 2400 MHz DDR4
 
 ### Measurement
 
-1. The time measured was the total time of executing `sbt` with the `compile` command...
+1. The time measured was the total time of executing `sbt` with the `compile` command (on a cold JVM)...
 2. ...although for certain projects there was extra (sub-second) overhead of changing Java versions (entering the Nix shell): these were "work project" (jdk 11) and akka (jdk 8).
 3. The "work project" was compiled in `IntegrationTest` and `Test` configurations (`Compile` is implied).
 
