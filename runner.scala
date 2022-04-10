@@ -77,7 +77,7 @@ object Projects {
     "nix" :: "develop" :: ".#jdk8" :: "--command" :: "bash" :: "-c" :: "(cd ../akka && sbt clean)" :: Nil,
     shouldClone = true,
     runnerRoot,
-    runnerRoot.resolve("akka")
+    runnerRoot.resolve("../akka")
   )
   val scalatest = sbtProject("scalatest", "scalatest")
   val cats = sbtProject("typelevel", "cats")
@@ -102,7 +102,7 @@ object Projects {
     "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project && sbt clean)" :: Nil,
     shouldClone = false,
     runnerRoot,
-    runnerRoot.resolve("work-project")
+    runnerRoot.resolve("../work-project")
   )
 
   val scala = sbtProject("scala", "scala")
