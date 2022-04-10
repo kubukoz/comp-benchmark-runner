@@ -108,32 +108,38 @@ object Projects {
   val scala = sbtProject("scala", "scala")
   val dotty = sbtProject("lampepfl", "dotty")
   val fs2Aws = sbtProject("laserdisc-io", "fs2-aws")
-  val zioAws = sbtProject("vigoo", "zio-aws").withCompileCommand(
-    "sbt" :: "-J-XX:+UseG1GC" :: "-J-Xmx8g" :: "-J-Xms8g" :: "-J-Xss16m" :: "zio-aws-ec2/compile" :: Nil
+  val zioAws = Project(
+    "vigoo",
+    "zio-aws",
+    "sbt" :: "-J-XX:+UseG1GC" :: "-J-Xmx8g" :: "-J-Xms8g" :: "-J-Xss16m" :: "zio-aws-ec2/compile" :: Nil,
+    "sbt" :: "-J-XX:+UseG1GC" :: "-J-Xmx8g" :: "-J-Xms8g" :: "-J-Xss16m" :: "clean" :: Nil,
+    shouldClone = true,
+    runnerRoot.resolve("../zio-aws"),
+    runnerRoot.resolve("../zio-aws")
   )
 }
 
 val projects = List(
-  Projects.akka,
-  Projects.scalatest,
-  Projects.cats,
-  Projects.catsEffect,
-  Projects.doobie,
-  Projects.natchez,
-  Projects.skunk,
-  Projects.fs2,
-  Projects.http4s,
-  Projects.metals,
-  Projects.steve,
-  Projects.scalaSteward,
-  Projects.smithy4s,
-  Projects.weaver,
-  Projects.trading,
-  Projects.zio,
-  Projects.workProject,
-  Projects.scala,
-  Projects.dotty,
-  Projects.fs2Aws,
+  // Projects.akka,
+  // Projects.scalatest,
+  // Projects.cats,
+  // Projects.catsEffect,
+  // Projects.doobie,
+  // Projects.natchez,
+  // Projects.skunk,
+  // Projects.fs2,
+  // Projects.http4s,
+  // Projects.metals,
+  // Projects.steve,
+  // Projects.scalaSteward,
+  // Projects.smithy4s,
+  // Projects.weaver,
+  // Projects.trading,
+  // Projects.zio,
+  // Projects.workProject,
+  // Projects.scala,
+  // Projects.dotty,
+  // Projects.fs2Aws,
   Projects.zioAws
 )
 
