@@ -39,6 +39,11 @@
 
         JAVA_HOME = pkgs.openjdk17;
       };
+      devShells.jdk11 = pkgs.mkShell {
+        packages = [
+          (pkgs.sbt.override { jre = pkgs.openjdk11; })
+        ];
+      };
     }
   );
 }

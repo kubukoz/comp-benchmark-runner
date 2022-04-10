@@ -25,8 +25,8 @@ case class Project(
 
   def exists: IO[Boolean] = IO.blocking(Files.isDirectory(projectRoot))
 
-  def cloneFromGithub: IO[Unit] = IO
-    .interruptibleMany(run("gh" :: "clone" :: show :: Nil, benchmarkRoot))
+  def cloneFromGithub: IO[Unit] =
+    run("gh" :: "repo" :: "clone" :: show :: Nil, benchmarkRoot)
 
   def withClone(shouldClone: Boolean): Project =
     this.copy(shouldClone = shouldClone)
@@ -78,12 +78,13 @@ object Projects {
   val trading = sbtProject("gvolpe", "trading")
   val zio = sbtProject("zio", "zio")
 
-  val workProject = sbtProject("kubukoz", "work-project")
-    .withCompileCommand("sbt" :: "IntegrationTest/compile;Test/compile" :: Nil)
-    .withSbtPrefix(
-      "nix" :: "develop" :: "--command" :: Nil
-    )
-    .withClone(false)
+  val workProject = Project(
+    "kubukoz",
+    "work-project",
+    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt \"IntegrationTest/compile;Test/compile\")" :: Nil,
+    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt clean)" :: Nil,
+    shouldClone = false
+  )
 
   val scala = sbtProject("scala", "scala")
   val dotty = sbtProject("lampepfl", "dotty")
@@ -136,14 +137,16 @@ object Main extends IOApp {
 
     val shouldCompile = !sys.env.contains("NO_COMPILE")
 
-    val cloneStep: fs2.Pipe[IO, Project, Project] = _.evalTap { proj =>
-      proj.exists.ifM(
-        ifTrue = IO.unit,
-        ifFalse = (
-          IO.println(s"Cloning ${proj.show}") *>
-            proj.cloneFromGithub
-        ).whenA(proj.shouldClone)
-      )
+    val cloneStep: fs2.Pipe[IO, Project, Project] = _.parEvalMap(3) { proj =>
+      proj.exists
+        .ifM(
+          ifTrue = IO.unit,
+          ifFalse = (
+            IO.println(s"Cloning ${proj.show}") *>
+              proj.cloneFromGithub
+          ).whenA(proj.shouldClone)
+        )
+        .as(proj)
     }
 
     val warmupStep: fs2.Pipe[IO, Project, Project] =
@@ -185,6 +188,7 @@ object Main extends IOApp {
     val results = Stream
       .emits(projects)
       .through(cloneStep)
+      .bufferAll
       .through(warmupStep)
       // Wait for all projects to clean before proceeding
       .bufferAll
