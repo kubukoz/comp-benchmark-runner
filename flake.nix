@@ -23,6 +23,12 @@
           overlays = [ arm-overrides ];
         };
 
+      mkJavaShell = jre: pkgs.mkShell {
+        packages = [
+          (pkgs.sbt.override { inherit jre; })
+        ];
+      };
+
     in
     {
       devShell = pkgs.mkShell {
@@ -39,16 +45,8 @@
 
         JAVA_HOME = pkgs.openjdk17;
       };
-      devShells.jdk11 = pkgs.mkShell {
-        packages = [
-          (pkgs.sbt.override { jre = pkgs.openjdk11; })
-        ];
-      };
-      devShells.jdk8 = pkgs.mkShell {
-        packages = [
-          (pkgs.sbt.override { jre = pkgs.openjdk8; })
-        ];
-      };
+      devShells.jdk11 = mkJavaShell pkgs.openjdk11;
+      devShells.jdk8 = mkJavaShell pkgs.openjdk8;
     }
   );
 }

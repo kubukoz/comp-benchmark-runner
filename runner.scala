@@ -136,7 +136,7 @@ val projects = List(
   Projects.weaver,
   Projects.trading,
   Projects.zio,
-  Projects.workProject,
+  // Projects.workProject,
   Projects.scala,
   Projects.dotty,
   Projects.fs2Aws,
@@ -153,6 +153,8 @@ case class Result(proj: Project, times: List[FiniteDuration]) {
 }
 
 object Main extends IOApp {
+  // Usage: ./app target.csv
+  // Optional configuration via env variables: ROUNDS, NO_WARMUP, NO_COMPILE
   def run(args: List[String]) = {
 
     val target = fs2.io.file.Path(
