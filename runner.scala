@@ -109,7 +109,7 @@ object Projects {
   val dotty = sbtProject("lampepfl", "dotty")
   val fs2Aws = sbtProject("laserdisc-io", "fs2-aws")
   val zioAws = sbtProject("vigoo", "zio-aws").withCompileCommand(
-    "sbt" :: "-J-XX:+UseG1GC" :: "-J-Xmx8g" :: "-J-Xms8g" :: "-J-Xss16m" :: "all/compile" :: Nil
+    "sbt" :: "-J-XX:+UseG1GC" :: "-J-Xmx8g" :: "-J-Xms8g" :: "-J-Xss16m" :: "zio-aws-ec2/compile" :: Nil
   )
 }
 
@@ -133,8 +133,8 @@ val projects = List(
   Projects.workProject,
   Projects.scala,
   Projects.dotty,
-  Projects.fs2Aws
-  // Projects.zioAws
+  Projects.fs2Aws,
+  Projects.zioAws
 )
 
 import cats.implicits._
