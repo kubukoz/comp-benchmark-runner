@@ -10,18 +10,19 @@ import fs2.Stream
 import scala.concurrent.duration.FiniteDuration
 import java.nio.file.Path
 
+val runnerRoot = Paths.get(".")
+val benchmarkRoot: Path = Paths.get(s"..")
+
 case class Project(
     org: String,
     name: String,
     compileCommand: List[String],
     cleanCommand: List[String],
-    shouldClone: Boolean
+    shouldClone: Boolean,
+    projectRoot: Path
 ) {
 
   def show: String = s"$org/$name"
-
-  val benchmarkRoot: Path = Paths.get(s"..")
-  val projectRoot = benchmarkRoot.resolve(name)
 
   def exists: IO[Boolean] = IO.blocking(Files.isDirectory(projectRoot))
 
@@ -62,7 +63,8 @@ def sbtProject(org: String, name: String) =
     name,
     List("sbt", "compile"),
     List("sbt", "clean"),
-    shouldClone = true
+    shouldClone = true,
+    benchmarkRoot.resolve(name)
   )
 
 object Projects {
@@ -70,6 +72,7 @@ object Projects {
   val cats = sbtProject("typelevel", "cats")
   val catsEffect = sbtProject("typelevel", "cats-effect")
   val fs2 = sbtProject("typelevel", "fs2")
+  val http4s = sbtProject("http4s", "http4s")
   val metals = sbtProject("scalameta", "metals")
   val steve = sbtProject("kubukoz", "steve")
   val scalaSteward = sbtProject("scala-steward", "scala-steward")
@@ -83,7 +86,8 @@ object Projects {
     "work-project",
     "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt \"IntegrationTest/compile;Test/compile\")" :: Nil,
     "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt clean)" :: Nil,
-    shouldClone = false
+    shouldClone = false,
+    runnerRoot
   )
 
   val scala = sbtProject("scala", "scala")
@@ -99,6 +103,7 @@ val projects = List(
   Projects.cats,
   Projects.catsEffect,
   Projects.fs2,
+  Projects.http4s,
   Projects.metals,
   Projects.steve,
   Projects.scalaSteward,
