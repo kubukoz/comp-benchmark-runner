@@ -19,6 +19,7 @@ case class Project(
     compileCommand: List[String],
     cleanCommand: List[String],
     shouldClone: Boolean,
+    commandRoot: Path,
     projectRoot: Path
 ) {
 
@@ -53,8 +54,8 @@ case class Project(
     }.void
   }
 
-  def compile: IO[Unit] = run(compileCommand, projectRoot)
-  def clean: IO[Unit] = run(cleanCommand, projectRoot)
+  def compile: IO[Unit] = run(compileCommand, commandRoot)
+  def clean: IO[Unit] = run(cleanCommand, commandRoot)
 }
 
 def sbtProject(org: String, name: String) =
@@ -64,13 +65,26 @@ def sbtProject(org: String, name: String) =
     List("sbt", "compile"),
     List("sbt", "clean"),
     shouldClone = true,
+    benchmarkRoot.resolve(name),
     benchmarkRoot.resolve(name)
   )
 
 object Projects {
+  val akka = Project(
+    "akka",
+    "akka",
+    "nix" :: "develop" :: ".#jdk8" :: "--command" :: "bash" :: "-c" :: "(cd ../akka && sbt compile)" :: Nil,
+    "nix" :: "develop" :: ".#jdk8" :: "--command" :: "bash" :: "-c" :: "(cd ../akka && sbt clean)" :: Nil,
+    shouldClone = true,
+    runnerRoot,
+    runnerRoot.resolve("akka")
+  )
   val scalatest = sbtProject("scalatest", "scalatest")
   val cats = sbtProject("typelevel", "cats")
   val catsEffect = sbtProject("typelevel", "cats-effect")
+  val doobie = sbtProject("tpolecat", "doobie")
+  val natchez = sbtProject("tpolecat", "natchez")
+  val skunk = sbtProject("tpolecat", "skunk")
   val fs2 = sbtProject("typelevel", "fs2")
   val http4s = sbtProject("http4s", "http4s")
   val metals = sbtProject("scalameta", "metals")
@@ -84,10 +98,11 @@ object Projects {
   val workProject = Project(
     "kubukoz",
     "work-project",
-    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt \"IntegrationTest/compile;Test/compile\")" :: Nil,
-    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project; sbt clean)" :: Nil,
+    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project && sbt \"IntegrationTest/compile;Test/compile\")" :: Nil,
+    "nix" :: "develop" :: ".#jdk11" :: "--command" :: "bash" :: "-c" :: "(cd ../work-project && sbt clean)" :: Nil,
     shouldClone = false,
-    runnerRoot
+    runnerRoot,
+    runnerRoot.resolve("work-project")
   )
 
   val scala = sbtProject("scala", "scala")
@@ -99,9 +114,13 @@ object Projects {
 }
 
 val projects = List(
+  Projects.akka,
   Projects.scalatest,
   Projects.cats,
   Projects.catsEffect,
+  Projects.doobie,
+  Projects.natchez,
+  Projects.skunk,
   Projects.fs2,
   Projects.http4s,
   Projects.metals,

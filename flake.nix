@@ -44,6 +44,11 @@
           (pkgs.sbt.override { jre = pkgs.openjdk11; })
         ];
       };
+      devShells.jdk8 = pkgs.mkShell {
+        packages = [
+          (pkgs.sbt.override { jre = pkgs.openjdk8; })
+        ];
+      };
     }
   );
 }
