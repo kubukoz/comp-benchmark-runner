@@ -120,27 +120,27 @@ object Projects {
 }
 
 val projects = List(
-  Projects.akka,
-  Projects.scalatest,
-  Projects.cats,
-  Projects.catsEffect,
-  Projects.doobie,
-  Projects.natchez,
-  Projects.skunk,
-  Projects.fs2,
-  Projects.http4s,
-  Projects.metals,
-  Projects.steve,
-  Projects.scalaSteward,
-  Projects.smithy4s,
-  Projects.weaver,
-  Projects.trading,
-  Projects.zio,
+  // Projects.akka,
+  // Projects.scalatest,
+  // Projects.cats,
+  // Projects.catsEffect,
+  // Projects.doobie,
+  // Projects.natchez,
+  // Projects.skunk,
+  // Projects.fs2,
+  // Projects.http4s,
+  // Projects.metals,
+  // Projects.steve,
+  Projects.scalaSteward
+  // Projects.smithy4s,
+  // Projects.weaver,
+  // Projects.trading,
+  // Projects.zio,
   // Projects.workProject,
-  Projects.scala,
-  Projects.dotty,
-  Projects.fs2Aws,
-  Projects.zioAws
+  // Projects.scala,
+  // Projects.dotty,
+  // Projects.fs2Aws,
+  // Projects.zioAws
 )
 
 import cats.implicits._
