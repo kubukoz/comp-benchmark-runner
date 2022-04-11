@@ -4,6 +4,13 @@ A runner for benchmarking compilation speeds across several Scala projects on Ma
 
 **Disclaimer**: This is very much non-scientific and I did all this in a weekend afternoon, don't expect everything to be well-executed and accurate :) it's also the first time I prepared anything like this.
 
+## How to run
+
+1. `nix develop`
+2. `scala-cli package .`
+3. shutdown the `bloop.Bloop` process (check the PID with `jps`)
+4. `ROUNDS=1 ./app results.csv` (to fully replicate, use ROUNDS=5)
+
 ## Main takeaways
 
 1. The M1 MAX outperforms the i9 by a factor of 1.6-2.2, depending on the project.
